@@ -10,23 +10,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($username) || empty($password)) {
         $error = 'กรุณากรอกชื่อผู้ใช้งานและรหัสผ่าน';
     } else {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-        $stmt->execute([$username]);
-        $user = $stmt->fetch();
+       $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+$stmt->execute([$username]);
+$user = $stmt->fetch();
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['role'] = $user['role'];
-            $_SESSION['username'] = $user['username'];
-            if ($user['role'] === 'admin') {
-                header('Location: admins');
-            } else {
-                header('Location: user_dashboard');
-            }
-            exit;
-        } else {
-            $error = 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง';
-        }
+if ($user && $password === $user['password']) {
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['role'] = $user['role'];
+    $_SESSION['username'] = $user['username'];
+
+    if ($user['role'] === 'admin') {
+        header('Location: admins');
+    } else {
+        header('Location: user_dashboard');
+    }
+    exit;
+} else {
+    $error = 'ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง';
+}
     }
 }
 ?>
